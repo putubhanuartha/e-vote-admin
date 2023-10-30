@@ -20,6 +20,7 @@ const TambahWarga = () => {
 		toast.success("Sukses menambahkan warga");
 		console.log(data);
 	};
+	console.log(errors);
 	return (
 		<div>
 			<form onSubmit={handleSubmit(onSubmit)}>
@@ -54,6 +55,25 @@ const TambahWarga = () => {
 						{errors.nik &&
 							errors.nik.type === "minLength" &&
 							"Masukkan NIK sejumlah 16 karakter"}
+					</FormErrorMessage>
+				</FormControl>
+				<FormControl
+					isInvalid={Boolean(errors.email)}
+					my={3}
+				>
+					<FormLabel htmlFor="email">Email</FormLabel>
+					<Input
+						{...register("email", {
+							required: "Harap masukkan email warga",
+							pattern: {
+								value:
+									/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+								message: "Alamat email tidak sesuai",
+							},
+						})}
+					/>
+					<FormErrorMessage>
+						{errors.email && errors.email.message}
 					</FormErrorMessage>
 				</FormControl>
 				<Button

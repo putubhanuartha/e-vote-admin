@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsPencilSquare } from "react-icons/bs";
 import {
 	Modal,
@@ -11,6 +11,7 @@ import {
 	ModalCloseButton,
 	FormControl,
 	FormLabel,
+	FormErrorMessage,
 } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import {
@@ -28,6 +29,7 @@ import {
 	IconButton,
 } from "@chakra-ui/react";
 import { DataWargaType } from "@/data/data";
+import { SubmitHandler, useForm } from "react-hook-form";
 export type DisplayUpdateWargaProps = {
 	dataWarga: DataWargaType[];
 };
@@ -35,10 +37,19 @@ const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 	dataWarga,
 }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [selectedId, setSelectedId] = useState<string>("");
 
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isSubmitting },
+		setValue,
+	} = useForm<DataWargaType>();
 	const initialRef = React.useRef(null);
 	const finalRef = React.useRef(null);
+
+	const onSubmit: SubmitHandler<DataWargaType> = (data) => {
+		console.log(data);
+	};
 	return (
 		<>
 			<Stack direction={"row"}>
@@ -62,6 +73,7 @@ const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 						<Tr>
 							<Th>Nama</Th>
 							<Th>NIK</Th>
+							<Th>Email</Th>
 							<Th>Action</Th>
 						</Tr>
 					</Thead>
@@ -71,11 +83,14 @@ const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 								<Tr key={index}>
 									<Td>{el.nama}</Td>
 									<Td>{el.nik}</Td>
+									<Td>{el.email}</Td>
 									<Td>
 										<IconButton
 											onClick={() => {
 												onOpen();
-												setSelectedId(el.id);
+												setValue("email", dataWarga[index].email);
+												setValue("nama", dataWarga[index].nama);
+												setValue("nik", dataWarga[index].nik);
 											}}
 											aria-label="edit warga"
 											icon={<BsPencilSquare />}
@@ -98,31 +113,55 @@ const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 				<ModalContent>
 					<ModalHeader>Edit data warga</ModalHeader>
 					<ModalCloseButton />
-					<ModalBody pb={6}>
-						<FormControl>
-							<FormLabel>NIK</FormLabel>
-							<Input
-								isDisabled
-								ref={initialRef}
-								defaultValue={dataWarga.find((el) => el.id === selectedId)?.nik}
-							/>
-						</FormControl>
 
-						<FormControl mt={4}>
-							<FormLabel>Nama</FormLabel>
-							<Input placeholder="Nama baru" defaultValue={dataWarga.find((el) => el.id === selectedId)?.nama}/>
-						</FormControl>
-					</ModalBody>
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<ModalBody pb={6}>
+							<FormControl>
+								<FormLabel>NIK</FormLabel>
+								<Input
+									{...register("nik")}
+									isDisabled
+								/>
+							</FormControl>
 
-					<ModalFooter>
-						<Button
-							colorScheme="blue"
-							mr={3}
-						>
-							Save
-						</Button>
-						<Button onClick={onClose}>Cancel</Button>
-					</ModalFooter>
+							<FormControl mt={4}>
+								<FormLabel>Nama</FormLabel>
+								<Input
+									{...register("nama")}
+									placeholder="Nama baru"
+								/>
+							</FormControl>
+							<FormControl
+								mt={4}
+								isInvalid={Boolean(errors.email)}
+							>
+								<FormLabel>Email</FormLabel>
+
+								<Input
+									{...register("email", {
+										pattern: {
+											value:
+												/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+											message: "Alamat email tidak sesuai",
+										},
+									})}
+									placeholder="Email baru"
+								/>
+								<FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+							</FormControl>
+						</ModalBody>
+
+						<ModalFooter>
+							<Button
+								colorScheme="blue"
+								mr={3}
+								type="submit"
+							>
+								Save
+							</Button>
+							<Button onClick={onClose}>Cancel</Button>
+						</ModalFooter>
+					</form>
 				</ModalContent>
 			</Modal>
 		</>

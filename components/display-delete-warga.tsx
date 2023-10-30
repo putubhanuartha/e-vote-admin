@@ -55,6 +55,7 @@ const DisplayDeleteWarga: React.FC<DisplayDeleteWarga> = ({ dataWarga }) => {
 						<Tr>
 							<Th>Nama</Th>
 							<Th>NIK</Th>
+							<Th>Email</Th>
 							<Th>Action</Th>
 						</Tr>
 					</Thead>
@@ -64,6 +65,7 @@ const DisplayDeleteWarga: React.FC<DisplayDeleteWarga> = ({ dataWarga }) => {
 								<Tr key={index}>
 									<Td>{el.nama}</Td>
 									<Td>{el.nik}</Td>
+									<Td>{el.email}</Td>
 									<Td>
 										<IconButton
 											onClick={onOpen}

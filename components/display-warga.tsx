@@ -24,6 +24,7 @@ const DisplayWarga: React.FC<DisplayWargaProps> = ({ dataWarga }) => {
 					<Tr>
 						<Th>Nama</Th>
 						<Th>NIK</Th>
+						<Th>Email</Th>
 					</Tr>
 				</Thead>
 				<Tbody>
@@ -32,6 +33,7 @@ const DisplayWarga: React.FC<DisplayWargaProps> = ({ dataWarga }) => {
 							<Tr key={index}>
 								<Td>{el.nama}</Td>
 								<Td>{el.nik}</Td>
+								<Td>{el.email}</Td>
 							</Tr>
 						);
 					})}
