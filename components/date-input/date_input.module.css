@@ -1,0 +1,10 @@
+
+#date_input input {
+	cursor: default;
+	/*when hover it default pointer*/
+	color: transparent;
+	/*make blinking cursor disappear*/
+	/*but it will make to text disappear*/
+	text-shadow: 0px 0px black;
+	/*when it disappear add text shadow to black*/
+}

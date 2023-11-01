@@ -1,12 +1,19 @@
-import DisplayDeleteWarga from '@/components/display-delete-warga'
-import React from 'react'
-import { dataWarga } from '@/data/data'
+import DisplayDeleteWarga from "@/components/display-delete-warga";
+import React from "react";
+import { dataWarga } from "@/data/data";
+import { Heading } from "@chakra-ui/react";
 const HapusWarga = () => {
-  return (
-    <div>
-        <DisplayDeleteWarga dataWarga={dataWarga}/>
-    </div>
-  )
-}
+	return (
+		<div>
+			<Heading
+				as={"h4"}
+				mb={"1rem"}
+			>
+				Hapus Warga
+			</Heading>
+			<DisplayDeleteWarga dataWarga={dataWarga} />
+		</div>
+	);
+};
 
-export default HapusWarga
+export default HapusWarga;

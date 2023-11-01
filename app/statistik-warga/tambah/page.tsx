@@ -8,6 +8,7 @@ import {
 	FormControl,
 	FormErrorMessage,
 	FormLabel,
+	Heading,
 	Input,
 } from "@chakra-ui/react";
 const TambahWarga = () => {
@@ -20,9 +21,9 @@ const TambahWarga = () => {
 		toast.success("Sukses menambahkan warga");
 		console.log(data);
 	};
-	console.log(errors);
 	return (
 		<div>
+			<Heading as={'h4'} mb={'1rem'}>Tambah Warga</Heading>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<FormControl isInvalid={Boolean(errors.nama)}>
 					<FormLabel htmlFor="nama">Nama Lengkap Warga</FormLabel>

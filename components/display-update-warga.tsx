@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { BsPencilSquare } from "react-icons/bs";
 import {
 	Modal,
@@ -74,6 +74,7 @@ const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 							<Th>Nama</Th>
 							<Th>NIK</Th>
 							<Th>Email</Th>
+							<Th>Status</Th>
 							<Th>Action</Th>
 						</Tr>
 					</Thead>
@@ -84,6 +85,7 @@ const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 									<Td>{el.nama}</Td>
 									<Td>{el.nik}</Td>
 									<Td>{el.email}</Td>
+									<Td>{el.status}</Td>
 									<Td>
 										<IconButton
 											onClick={() => {
