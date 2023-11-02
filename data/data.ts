@@ -1,4 +1,4 @@
-enum StatusAkunWarga {
+export enum StatusAkunWarga {
     terdaftar = "terdaftar", belum_terdaftar = "belum terdaftar"
 }
 export type DataWargaType = {

@@ -1,4 +1,6 @@
+import { DataWargaResponseType } from "@/app/statistik-warga/page";
 import { DataWargaType } from "@/data/data";
+import { StatusAkunWarga } from "@/data/data";
 import {
 	Table,
 	Thead,
@@ -13,7 +15,7 @@ import {
 import React from "react";
 
 export type DisplayWargaProps = {
-	dataWarga: DataWargaType[];
+	dataWarga: DataWargaResponseType[];
 };
 const DisplayWarga: React.FC<DisplayWargaProps> = ({ dataWarga }) => {
 	return (
@@ -35,7 +37,11 @@ const DisplayWarga: React.FC<DisplayWargaProps> = ({ dataWarga }) => {
 								<Td>{el.nama}</Td>
 								<Td>{el.nik}</Td>
 								<Td>{el.email}</Td>
-								<Td>{el.status}</Td>
+								<Td>
+									{el.registered
+										? StatusAkunWarga.terdaftar
+										: StatusAkunWarga.belum_terdaftar}
+								</Td>
 							</Tr>
 						);
 					})}

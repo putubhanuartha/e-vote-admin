@@ -11,7 +11,12 @@ const HapusWarga = () => {
 			>
 				Hapus Warga
 			</Heading>
-			<DisplayDeleteWarga dataWarga={dataWarga} />
+			{dataWarga.length === 0 ? (
+				<Heading>Data warga kosong</Heading>
+			) : (
+				<DisplayDeleteWarga dataWarga={dataWarga} />
+			)}
+			
 		</div>
 	);
 };

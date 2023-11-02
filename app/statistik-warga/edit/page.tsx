@@ -5,8 +5,18 @@ import { Heading } from "@chakra-ui/react";
 const EditWarga = () => {
 	return (
 		<div>
-			<Heading as={'h4'} mb={'1rem'}>Edit Warga</Heading>
-			<DisplayUpdateWarga dataWarga={dataWarga} />
+			<Heading
+				as={"h4"}
+				mb={"1rem"}
+			>
+				Edit Warga
+			</Heading>
+
+			{dataWarga.length === 0 ? (
+				<Heading>Data warga kosong</Heading>
+			) : (
+				<DisplayUpdateWarga dataWarga={dataWarga} />
+			)}
 		</div>
 	);
 };

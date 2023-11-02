@@ -3,6 +3,7 @@ import React from "react";
 import { toast } from "react-toastify";
 import { DataWargaType } from "@/data/data";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { axiosMainServer } from "@/config/axios.config";
 import {
 	Button,
 	FormControl,
@@ -11,19 +12,39 @@ import {
 	Heading,
 	Input,
 } from "@chakra-ui/react";
+import axios from "axios";
 const TambahWarga = () => {
 	const {
 		handleSubmit,
 		register,
+		reset,
 		formState: { errors, isSubmitting },
 	} = useForm<DataWargaType>();
 	const onSubmit: SubmitHandler<DataWargaType> = (data) => {
-		toast.success("Sukses menambahkan warga");
-		console.log(data);
+		axiosMainServer
+			.post("/admin/add-warga", {
+				nama: data.nama,
+				nik: data.nik,
+				email: data.email,
+			})
+			.then((res) => {
+				console.log(res.data);
+				toast.success("Sukses menambahkan warga");
+				reset();
+			})
+			.catch((err) => {
+				console.error(err);
+				toast.error("Gagal menambahkan warga");
+			});
 	};
 	return (
 		<div>
-			<Heading as={'h4'} mb={'1rem'}>Tambah Warga</Heading>
+			<Heading
+				as={"h4"}
+				mb={"1rem"}
+			>
+				Tambah Warga
+			</Heading>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<FormControl isInvalid={Boolean(errors.nama)}>
 					<FormLabel htmlFor="nama">Nama Lengkap Warga</FormLabel>
