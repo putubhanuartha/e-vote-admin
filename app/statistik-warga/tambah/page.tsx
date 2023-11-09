@@ -12,7 +12,7 @@ import {
 	Heading,
 	Input,
 } from "@chakra-ui/react";
-import axios from "axios";
+
 const TambahWarga = () => {
 	const {
 		handleSubmit,
@@ -28,7 +28,6 @@ const TambahWarga = () => {
 				email: data.email,
 			})
 			.then((res) => {
-				console.log(res.data);
 				toast.success("Sukses menambahkan warga");
 				reset();
 			})

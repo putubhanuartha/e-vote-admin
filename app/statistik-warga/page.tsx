@@ -6,6 +6,7 @@ import { axiosMainServerCredentials } from "@/config/axios.config";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import fetchStatsWarga from "@/helper/fetchStatsWarga";
+import { useFetchAllWarga } from "@/hooks/useQueryHooks";
 // import { dataWarga } from "@/data/data";
 export type DataWargaResponseType = {
 	email: string;
@@ -18,10 +19,7 @@ export type DataWargaResponseType = {
 const StatistikWarga = () => {
 	const { register, handleSubmit } = useForm<{ keywords: string }>();
 	const [keyword, setKeyword] = useState<string | undefined>(undefined);
-	const { data, isLoading: isLoadingQuery } = useQuery({
-		queryKey: ["statswarga", keyword],
-		queryFn: () => fetchStatsWarga(keyword),
-	});
+	const { data, isLoading: isLoadingQuery } = useFetchAllWarga(keyword);
 	const onSubmit: SubmitHandler<{ keywords: string }> = (data) => {
 		setKeyword(data.keywords);
 	};

@@ -1,5 +1,11 @@
 "use client";
-import React, { useRef } from "react";
+import React, {
+	ChangeEvent,
+	ChangeEventHandler,
+	FormEvent,
+	FormEventHandler,
+	useRef,
+} from "react";
 import { DataWargaType } from "@/data/data";
 import { BsTrashFill } from "react-icons/bs";
 import { IconButton } from "@chakra-ui/react";
@@ -25,29 +31,48 @@ import {
 	TableContainer,
 	Button,
 } from "@chakra-ui/react";
-import { toast } from "react-toastify";
+
 export type DisplayDeleteWarga = {
 	dataWarga: DataWargaType[];
+	id: string | null;
+	setId: React.Dispatch<React.SetStateAction<string | null>>;
+	handleDelete: () => void;
+	setKeyword: React.Dispatch<React.SetStateAction<undefined | string | null>>;
 };
-const DisplayDeleteWarga: React.FC<DisplayDeleteWarga> = ({ dataWarga }) => {
+const DisplayDeleteWarga: React.FC<DisplayDeleteWarga> = ({
+	dataWarga,
+	setId,
+	handleDelete,
+	setKeyword,
+}) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const cancelRef = useRef(null);
+	const handleSubmitSearch = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const data = new FormData(e.currentTarget);
+		const dataSearch = data.get("search");
+		setKeyword(dataSearch as string);
+	};
 	return (
 		<>
-			<Stack direction={"row"}>
-				<Input
-					type="text"
-					placeholder="Cari warga"
-					mb={3}
-				/>
-				<Button
-					type="button"
-					variant={"solid"}
-					colorScheme="blue"
-				>
-					Cari
-				</Button>
-			</Stack>
+			<form onSubmit={handleSubmitSearch}>
+				<Stack direction={"row"}>
+					<Input
+						type="text"
+						id="search"
+						name="search"
+						placeholder="Cari warga"
+						mb={3}
+					/>
+					<Button
+						type="submit"
+						variant={"solid"}
+						colorScheme="blue"
+					>
+						Cari
+					</Button>
+				</Stack>
+			</form>
 			<TableContainer>
 				<Table variant="simple">
 					<TableCaption>Data Statistik Warga RT 01</TableCaption>
@@ -70,7 +95,10 @@ const DisplayDeleteWarga: React.FC<DisplayDeleteWarga> = ({ dataWarga }) => {
 									<Td>{el.status}</Td>
 									<Td>
 										<IconButton
-											onClick={onOpen}
+											onClick={() => {
+												onOpen();
+												setId(el.id);
+											}}
 											aria-label="delete warga"
 											icon={<BsTrashFill />}
 											colorScheme="red"
@@ -103,15 +131,18 @@ const DisplayDeleteWarga: React.FC<DisplayDeleteWarga> = ({ dataWarga }) => {
 						<AlertDialogFooter>
 							<Button
 								ref={cancelRef}
-								onClick={onClose}
+								onClick={() => {
+									onClose();
+									setId(null);
+								}}
 							>
 								Batal
 							</Button>
 							<Button
 								colorScheme="red"
-								onClick={() => {
+								onClick={async () => {
+									await handleDelete();
 									onClose();
-									toast.success("Data warga terhapus");
 								}}
 								ml={3}
 							>
