@@ -9,6 +9,7 @@ export type DataWargaType = {
     status: StatusAkunWarga
 }
 
+
 export const dataAdmin = {
     username: "admin",
     password: "admin"

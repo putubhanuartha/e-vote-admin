@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { FormEvent, useState } from "react";
 import { BsPencilSquare } from "react-icons/bs";
 import {
 	Modal,
@@ -30,14 +30,34 @@ import {
 } from "@chakra-ui/react";
 import { DataWargaType } from "@/data/data";
 import { SubmitHandler, useForm } from "react-hook-form";
+import updateWarga from "@/helper/updateWarga";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 export type DisplayUpdateWargaProps = {
 	dataWarga: DataWargaType[];
+	id: string | null;
+	setId: React.Dispatch<React.SetStateAction<string | null>>;
+	keyword: string | undefined | null;
+	setKeyword: React.Dispatch<React.SetStateAction<null | undefined | string>>;
 };
 const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 	dataWarga,
+	id,
+	setId,
+	keyword,
+	setKeyword,
 }) => {
+	const queryClient = useQueryClient();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
+	const { mutateAsync, isPending } = useMutation({
+		mutationFn: updateWarga,
+		onSuccess: () => {
+			return queryClient.invalidateQueries({
+				queryKey: ["statswarga", keyword],
+			});
+		},
+	});
 	const {
 		register,
 		handleSubmit,
@@ -47,25 +67,42 @@ const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 	const initialRef = React.useRef(null);
 	const finalRef = React.useRef(null);
 
-	const onSubmit: SubmitHandler<DataWargaType> = (data) => {
-		console.log(data);
+	const onSubmit: SubmitHandler<DataWargaType> = async (data) => {
+		try {
+			const res = await mutateAsync(data);
+			toast.success("Data berhasil diupdate");
+			onClose();
+			console.log(res);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+	const handleSubmitSearch = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const data = new FormData(e.currentTarget);
+		const dataSearch = data.get("search");
+		setKeyword(dataSearch as string);
 	};
 	return (
 		<>
-			<Stack direction={"row"}>
-				<Input
-					type="text"
-					placeholder="Cari warga"
-					mb={3}
-				/>
-				<Button
-					type="button"
-					variant={"solid"}
-					colorScheme="blue"
-				>
-					Cari
-				</Button>
-			</Stack>
+			<form onSubmit={handleSubmitSearch}>
+				<Stack direction={"row"}>
+					<Input
+						type="text"
+						placeholder="Cari warga"
+						id="search"
+						name="search"
+						mb={3}
+					/>
+					<Button
+						type="submit"
+						variant={"solid"}
+						colorScheme="blue"
+					>
+						Cari
+					</Button>
+				</Stack>
+			</form>
 			<TableContainer>
 				<Table variant="simple">
 					<TableCaption>Data Statistik Warga RT 01</TableCaption>
@@ -93,6 +130,7 @@ const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 												setValue("email", dataWarga[index].email);
 												setValue("nama", dataWarga[index].nama);
 												setValue("nik", dataWarga[index].nik);
+												setValue("id", dataWarga[index].id);
 											}}
 											aria-label="edit warga"
 											icon={<BsPencilSquare />}
@@ -155,13 +193,19 @@ const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 
 						<ModalFooter>
 							<Button
+								disabled={isSubmitting || isPending}
 								colorScheme="blue"
 								mr={3}
 								type="submit"
 							>
 								Save
 							</Button>
-							<Button onClick={onClose}>Cancel</Button>
+							<Button
+								disabled={isSubmitting || isPending}
+								onClick={onClose}
+							>
+								Cancel
+							</Button>
 						</ModalFooter>
 					</form>
 				</ModalContent>

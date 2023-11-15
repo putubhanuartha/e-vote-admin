@@ -1,8 +1,15 @@
+"use client"
 import DisplayUpdateWarga from "@/components/display-update-warga";
-import React from "react";
-import { dataWarga } from "@/data/data";
+import React, { useState } from "react";
 import { Heading } from "@chakra-ui/react";
+import { useFetchAllWarga } from "@/hooks/useQueryHooks";
+import { DataWargaResponseType } from "../page";
+
 const EditWarga = () => {
+	const [id, setId] = useState<string | null>(null);
+	const [keyword, setKeyword] = useState<string | undefined | null>(undefined);
+	const { data, isLoading: isLoadingQuery } = useFetchAllWarga(keyword);
+
 	return (
 		<div>
 			<Heading
@@ -12,11 +19,19 @@ const EditWarga = () => {
 				Edit Warga
 			</Heading>
 
-			{dataWarga.length === 0 ? (
-				<Heading>Data warga kosong</Heading>
-			) : (
-				<DisplayUpdateWarga dataWarga={dataWarga} />
-			)}
+			{isLoadingQuery && <Heading>Loading ...</Heading>}
+			{data &&
+				((data as DataWargaResponseType[]).length === 0 ? (
+					<Heading>Data warga kosong</Heading>
+				) : (
+					<DisplayUpdateWarga
+						dataWarga={data}
+						id={id}
+						setId={setId}
+						setKeyword={setKeyword}
+						keyword={keyword}
+					/>
+				))}
 		</div>
 	);
 };
