@@ -31,6 +31,7 @@ import {
 	getHourMinuteEpoch,
 } from "@/helper/timeConverters";
 import editVoting from "@/helper/editVoting";
+import { toast } from "react-toastify";
 export type VoteFormModalType = {
 	isOpen: boolean;
 	onClose: () => void;
@@ -94,7 +95,6 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 		dataForm.date = date;
 		dataForm.timeStart = timeStart + ":00";
 		dataForm.timeEnd = timeEnd + ":00";
-		console.log(date);
 		try {
 			if (isEditFormVote && data) {
 				dataForm.id = data.votingId;
@@ -102,12 +102,15 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 					votingCandidateId: data.id as string,
 					...dataForm,
 				});
+				toast.success("data voting berhasil diupdate");
 				onClose();
 			} else {
 				await addVotingAsync(dataForm);
+				toast.success("data voting berhasil ditambahkan");
 			}
 		} catch (err) {
 			console.error(err);
+			toast.error("gagal mengupdate data atau menambahkan data");
 		}
 	};
 	const watchJenisPilihan = watch("jenisPilihan");
