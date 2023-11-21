@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import {
 	Modal,
@@ -27,11 +27,13 @@ interface IFormKandidat {
 	misi: string;
 	file: FileList;
 }
-export type TambahKandidatModal = {
+export type KandidatFormModalType = {
 	isOpen: boolean;
 	onClose: () => void;
+	isEditFormCandidate: boolean;
+	setIsEditFormCandidate: React.Dispatch<React.SetStateAction<boolean>>;
 };
-const TambahKandidatModal: React.FC<TambahKandidatModal> = ({
+const KandidatFormModal: React.FC<KandidatFormModalType> = ({
 	isOpen,
 	onClose,
 }) => {
@@ -125,4 +127,4 @@ const TambahKandidatModal: React.FC<TambahKandidatModal> = ({
 	);
 };
 
-export default TambahKandidatModal;
+export default KandidatFormModal;
