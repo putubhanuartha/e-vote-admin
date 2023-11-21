@@ -25,19 +25,20 @@ import {
 import DateInput from "@/components/date-input/date-input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import addVoting from "@/helper/addVoting";
-import { VotingCandidatesType } from "./voting.types";
+
 import {
 	convertToDateObject,
 	getHourMinuteEpoch,
 } from "@/helper/timeConverters";
 import editVoting from "@/helper/editVoting";
 import { toast } from "react-toastify";
+import { VotingType } from "./voting.types";
 export type VoteFormModalType = {
 	isOpen: boolean;
 	onClose: () => void;
 	isEditFormVote: boolean;
 	setIsEditFormVote: React.Dispatch<React.SetStateAction<boolean>>;
-	data: VotingCandidatesType | null | undefined;
+	data: VotingType | null | undefined;
 };
 
 export type IFormVote = {
@@ -60,9 +61,7 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 	const queryClient = useQueryClient();
 
 	const [date, setDate] = useState(
-		data?.voting
-			? new Date(convertToDateObject(data.voting.epochtimeStart))
-			: new Date()
+		data ? new Date(convertToDateObject(data.epochtimeStart)) : new Date()
 	);
 	const [timeStart, setTimeStart] = useState("");
 	const [timeEnd, setTimeEnd] = useState("");
@@ -73,7 +72,7 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 		formState: { errors },
 	} = useForm<IFormVote>({
 		defaultValues: {
-			jenisPilihan: data?.voting ? data.voting.jenisPilihan : "rt",
+			jenisPilihan: data ? data.jenisPilihan : "rt",
 		},
 	});
 	const initialRef = React.useRef(null);
@@ -97,11 +96,8 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 		dataForm.timeEnd = timeEnd + ":00";
 		try {
 			if (isEditFormVote && data) {
-				dataForm.id = data.votingId;
-				await editMutateAync({
-					votingCandidateId: data.id as string,
-					...dataForm,
-				});
+				dataForm.id = data.id;
+				await editMutateAync(dataForm);
 				toast.success("data voting berhasil diupdate");
 				onClose();
 			} else {
@@ -158,7 +154,7 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 								{...register("kecamatan", {
 									required: "Masukkan lokasi kecamatan pemilihan",
 								})}
-								defaultValue={data?.voting.kecamatan}
+								defaultValue={data ? data.kecamatan : undefined}
 								type="text"
 								placeholder="Masukkan lokasi kecamatan"
 							/>
@@ -167,7 +163,7 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 						<FormControl isInvalid={Boolean(errors.kelurahan)}>
 							<FormLabel htmlFor="kelurahan">Kelurahan</FormLabel>
 							<Input
-								defaultValue={data?.voting.kelurahan}
+								defaultValue={data ? data.kelurahan : undefined}
 								{...register("kelurahan", {
 									required: "Masukkan lokasi kandidat",
 								})}
@@ -178,7 +174,7 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 						<FormControl isInvalid={Boolean(errors.rw)}>
 							<FormLabel htmlFor="rw">Masukkan nomor rw</FormLabel>
 							<Input
-								defaultValue={data?.voting.rw}
+								defaultValue={data ? data.rw : undefined}
 								{...register("rw", { required: "Masukkan rw" })}
 								type="number"
 								placeholder="Masukkan nomor rw"
@@ -189,7 +185,7 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 							<FormControl isInvalid={Boolean(errors.rt)}>
 								<FormLabel htmlFor="rt">Masukkan nomor rw</FormLabel>
 								<Input
-									defaultValue={data?.voting.rt ? data.voting.rt : undefined}
+									defaultValue={data ? data.rt : undefined}
 									{...register("rt", { required: "Masukkan nomor rt" })}
 									type="number"
 									placeholder="Masukkan nomor rt"
@@ -209,14 +205,10 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 							<FormLabel>Atur waktu Mulai</FormLabel>
 							<DateInput
 								defaultFirstDigit={
-									data?.voting
-										? getHourMinuteEpoch(data.voting.epochtimeStart).hour
-										: 0
+									data ? getHourMinuteEpoch(data.epochtimeStart).hour : 0
 								}
 								defaultSecondDigit={
-									data?.voting
-										? getHourMinuteEpoch(data.voting.epochtimeStart).minute
-										: 0
+									data ? getHourMinuteEpoch(data.epochtimeStart).minute : 0
 								}
 								setTime={setTimeStart}
 								time={timeStart}
@@ -226,14 +218,10 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 							<FormLabel>Atur waktu Selesai</FormLabel>
 							<DateInput
 								defaultFirstDigit={
-									data?.voting
-										? getHourMinuteEpoch(data.voting.epochtimeEnd).hour
-										: 0
+									data ? getHourMinuteEpoch(data.epochtimeEnd).hour : 0
 								}
 								defaultSecondDigit={
-									data?.voting
-										? getHourMinuteEpoch(data.voting.epochtimeEnd).minute
-										: 0
+									data ? getHourMinuteEpoch(data.epochtimeEnd).minute : 0
 								}
 								setTime={setTimeEnd}
 								time={timeEnd}

@@ -10,12 +10,6 @@ export type VotingType = {
     kecamatan: string
     kelurahan: string
     rw: number
-    rt: number | null
-}
-export type VotingCandidatesType = {
-    id: string
-    votingId: string
-    candidateId: string | null
+    rt?: number | undefined
     status: StatusVoting
-    voting: VotingType
 }

@@ -2,11 +2,12 @@ import { Box, Button, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BsPlusSquare } from "react-icons/bs";
-import { VotingCandidatesType } from "./voting.types";
+
 import {
 	convertEpochToLocalGMT,
 	timeDigitConverter,
 } from "@/helper/timeConverters";
+import { VotingType } from "./voting.types";
 export type VotingReadyPageProps = {
 	isCandidateFormOpen: boolean;
 	isVoteFormOpen: boolean;
@@ -14,7 +15,7 @@ export type VotingReadyPageProps = {
 	onVoteFormClose: () => void;
 	onCandidateFormOpen: () => void;
 	onVoteFormOpen: () => void;
-	data: VotingCandidatesType;
+	data: VotingType;
 };
 const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 	isCandidateFormOpen,
@@ -26,12 +27,12 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 	data,
 }) => {
 	const { hour: hourEnd, minute: minuteEnd } = convertEpochToLocalGMT(
-		data.voting.epochtimeEnd
+		data.epochtimeEnd
 	);
 	const { day, hour, minute, month, year } = convertEpochToLocalGMT(
-		data.voting.epochtimeStart
+		data.epochtimeStart
 	);
-	console.log(day, month);
+	console.log(data)
 	return (
 		<>
 			<Flex
@@ -88,23 +89,23 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 						fontWeight={"medium"}
 					>
 						Pemilihan Ketua{" "}
-						<span className="uppercase">{data.voting.jenisPilihan}</span>
+						<span className="uppercase">{data.jenisPilihan}</span>
 					</Text>
 					<Box>
 						<Text
 							textAlign={{ base: "start", lg: "end" }}
 							fontWeight={"normal"}
 						>
-							Kelurahan {data.voting.kelurahan}, Kecamatan{" "}
-							{data.voting.kecamatan}
+							Kelurahan {data.kelurahan}, Kecamatan{" "}
+							{data.kecamatan}
 						</Text>
 						<Text
 							textAlign={{ base: "start", lg: "end" }}
 							fontWeight={"normal"}
 						>
-							{data.voting.jenisPilihan === "rw"
-								? `RW ${data.voting.rw}`
-								: `RW ${data.voting.rw}, RT ${data.voting.rt}`}
+							{data.jenisPilihan === "rw"
+								? `RW ${data.rw}`
+								: `RW ${data.rw}, RT ${data.rt}`}
 						</Text>
 					</Box>
 				</Box>

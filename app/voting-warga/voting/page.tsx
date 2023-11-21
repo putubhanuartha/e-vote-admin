@@ -18,7 +18,7 @@ import VotingReadyPage from "./voting-ready-page";
 import VoteFormModal from "./vote-form-modal";
 import KandidatFormModal from "./kandidate-form-modal";
 import { useFetchAvailableVoting } from "@/hooks/useQueryHooks";
-import { VotingCandidatesType } from "./voting.types";
+import { VotingType } from "./voting.types";
 
 const VotingPage = () => {
 	const [isEditFormCandidate, setIsEditFormCandidate] = useState(false);
@@ -57,7 +57,7 @@ const VotingPage = () => {
 				<>
 					{isEditFormVote && data ? (
 						<VotingReadyPage
-							data={data as VotingCandidatesType}
+							data={data as VotingType}
 							isCandidateFormOpen={isCandidateFormOpen}
 							isVoteFormOpen={isVoteFormOpen}
 							onCandidateFormClose={onCandidateFormClose}
