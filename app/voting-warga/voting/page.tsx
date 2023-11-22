@@ -14,13 +14,19 @@ import { useDisclosure, Text } from "@chakra-ui/react";
 import { BsPlusSquare } from "react-icons/bs";
 import CandidateCard from "./candidate-card";
 import VotingReadyPage from "./voting-ready-page";
+import { useRouter } from "next/navigation";
 
 import VoteFormModal from "./vote-form-modal";
 import KandidatFormModal from "./kandidate-form-modal";
-import { useFetchAvailableVoting } from "@/hooks/useQueryHooks";
-import { VotingType } from "./voting.types";
+import {
+	useFetchAllWarga,
+	useFetchAvailableVoting,
+} from "@/hooks/useQueryHooks";
+import { VotingType } from "../voting.types";
+import { toast } from "react-toastify";
 
 const VotingPage = () => {
+	const router = useRouter();
 	const [isEditFormCandidate, setIsEditFormCandidate] = useState(false);
 	const [isEditFormVote, setIsEditFormVote] = useState(true);
 	const {
@@ -29,12 +35,34 @@ const VotingPage = () => {
 		onClose: onCandidateFormClose,
 	} = useDisclosure();
 	const { data, isLoading } = useFetchAvailableVoting();
+	const [keyword, setKeyword] = useState<string | undefined>(undefined);
+	const {
+		data: datawarga,
+		isLoading: isLoadingWarga,
+		isFetching: isFetchingWarga,
+		isPending: isPendingWarga,
+	} = useFetchAllWarga(keyword);
 	const {
 		isOpen: isVoteFormOpen,
 		onOpen: onVoteFormOpen,
 		onClose: onVoteFormClose,
 	} = useDisclosure();
 
+	useEffect(() => {
+		if (!isLoadingWarga && !isLoading && !isFetchingWarga && !isPendingWarga) {
+			if (!datawarga || datawarga.length === 0) {
+				router.replace("/");
+				toast.error("Data warga masih kosong")
+			}
+		}
+	}, [
+		datawarga,
+		isLoadingWarga,
+		router,
+		isLoading,
+		isFetchingWarga,
+		isPendingWarga,
+	]);
 	useEffect(() => {
 		if (!data && !isLoading) {
 			setIsEditFormVote(false);
@@ -51,11 +79,12 @@ const VotingPage = () => {
 	}, [isEditFormVote, onVoteFormClose, onVoteFormOpen]);
 	return (
 		<>
-			{isLoading && !data ? (
+			{(isLoading && !data && !datawarga) ||
+			(datawarga && datawarga.length === 0) ? (
 				<Heading>Loading ...</Heading>
 			) : (
 				<>
-					{isEditFormVote && data ? (
+					{isEditFormVote && data && datawarga && datawarga.length > 0 ? (
 						<VotingReadyPage
 							data={data as VotingType}
 							isCandidateFormOpen={isCandidateFormOpen}
@@ -78,12 +107,18 @@ const VotingPage = () => {
 							<Button margin={"auto"}>Tambah Voting</Button>
 						</Box>
 					)}
-					<KandidatFormModal
-						setIsEditFormCandidate={setIsEditFormCandidate}
-						isEditFormCandidate={isEditFormCandidate}
-						isOpen={isCandidateFormOpen}
-						onClose={onCandidateFormClose}
-					/>
+
+					{data && datawarga && datawarga.length > 0 && (
+						<KandidatFormModal
+							datawarga={datawarga}
+							dataProps={data}
+							setIsEditFormCandidate={setIsEditFormCandidate}
+							isEditFormCandidate={isEditFormCandidate}
+							isOpen={isCandidateFormOpen}
+							onClose={onCandidateFormClose}
+						/>
+					)}
+
 					<VoteFormModal
 						data={data}
 						setIsEditFormVote={setIsEditFormVote}

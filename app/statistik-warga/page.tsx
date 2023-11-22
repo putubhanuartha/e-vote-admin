@@ -1,20 +1,10 @@
 "use client";
 import DisplayWarga from "@/components/display-warga";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Heading, Input, Stack } from "@chakra-ui/react";
-import { axiosMainServerCredentials } from "@/config/axios.config";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
-import fetchStatsWarga from "@/helper/fetchStatsWarga";
 import { useFetchAllWarga } from "@/hooks/useQueryHooks";
-// import { dataWarga } from "@/data/data";
-export type DataWargaResponseType = {
-	email: string;
-	id: string;
-	nama: string;
-	nik: string;
-	registered: boolean;
-};
+import { DataWargaResponseType } from "./statistik.type";
 
 const StatistikWarga = () => {
 	const { register, handleSubmit } = useForm<{ keywords: string }>();

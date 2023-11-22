@@ -16,7 +16,7 @@ export const timeDigitConverter = (firstDigit: number, secondDigit: number) => {
 export const convertToDateObject = (epochSeconds: number) => {
     let milis = epochSeconds * 1000
     const date = new Date(milis)
-    date.setUTCHours(0, 0, 0, 0)
+    date.setHours(0, 0, 0, 0)
     return date
 }
 

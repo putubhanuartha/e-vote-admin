@@ -11,16 +11,11 @@ import {
 	ModalBody,
 	ModalCloseButton,
 	Input,
-	useDisclosure,
 	Select,
-	Box,
 	Button,
-	Flex,
 	FormControl,
 	FormErrorMessage,
 	FormLabel,
-	Stack,
-	Textarea,
 } from "@chakra-ui/react";
 import DateInput from "@/components/date-input/date-input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -32,7 +27,8 @@ import {
 } from "@/helper/timeConverters";
 import editVoting from "@/helper/editVoting";
 import { toast } from "react-toastify";
-import { VotingType } from "./voting.types";
+import { VotingType } from "../voting.types";
+import { JenisPilihan } from "@/enums";
 export type VoteFormModalType = {
 	isOpen: boolean;
 	onClose: () => void;
@@ -59,9 +55,10 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 	data,
 }) => {
 	const queryClient = useQueryClient();
-
+	const time = new Date();
+	time.setHours(0, 0, 0, 0);
 	const [date, setDate] = useState(
-		data ? new Date(convertToDateObject(data.epochtimeStart)) : new Date()
+		data ? convertToDateObject(data.epochtimeStart) : time
 	);
 	const [timeStart, setTimeStart] = useState("");
 	const [timeEnd, setTimeEnd] = useState("");
@@ -70,6 +67,7 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 		register,
 		watch,
 		formState: { errors },
+		setValue,
 	} = useForm<IFormVote>({
 		defaultValues: {
 			jenisPilihan: data ? data.jenisPilihan : "rt",
@@ -110,6 +108,13 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 		}
 	};
 	const watchJenisPilihan = watch("jenisPilihan");
+
+	useEffect(() => {
+		if (watchJenisPilihan === JenisPilihan.rw) {
+			setValue("rt", undefined);
+		}
+		console.log(watchJenisPilihan);
+	}, [setValue, watchJenisPilihan]);
 	return (
 		<Modal
 			initialFocusRef={initialRef}
@@ -185,7 +190,9 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 							<FormControl isInvalid={Boolean(errors.rt)}>
 								<FormLabel htmlFor="rt">Masukkan nomor rw</FormLabel>
 								<Input
-									defaultValue={data ? data.rt : undefined}
+									defaultValue={
+										watchJenisPilihan === "rt" ? data?.rt : undefined
+									}
 									{...register("rt", { required: "Masukkan nomor rt" })}
 									type="number"
 									placeholder="Masukkan nomor rt"

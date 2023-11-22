@@ -3,7 +3,7 @@ import DisplayUpdateWarga from "@/components/display-update-warga";
 import React, { useState } from "react";
 import { Heading } from "@chakra-ui/react";
 import { useFetchAllWarga } from "@/hooks/useQueryHooks";
-import { DataWargaResponseType } from "../page";
+import { DataWargaResponseType } from "../statistik.type";
 
 const EditWarga = () => {
 	const [id, setId] = useState<string | null>(null);

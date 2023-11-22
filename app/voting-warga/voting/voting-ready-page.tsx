@@ -2,12 +2,16 @@ import { Box, Button, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BsPlusSquare } from "react-icons/bs";
-
+import CandidateCard from "./candidate-card";
 import {
 	convertEpochToLocalGMT,
 	timeDigitConverter,
 } from "@/helper/timeConverters";
-import { VotingType } from "./voting.types";
+import { VotingCandidateType, VotingType } from "../voting.types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import fetchAllActiveCandidates from "@/helper/fetchAllActiveCandidates";
+import deleteCandidate from "@/helper/deleteCandidate";
+import { toast } from "react-toastify";
 export type VotingReadyPageProps = {
 	isCandidateFormOpen: boolean;
 	isVoteFormOpen: boolean;
@@ -26,13 +30,32 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 	onVoteFormOpen,
 	data,
 }) => {
+	const queryClient = useQueryClient();
+	const { data: dataCandidates, isLoading: loadingCandidates } = useQuery({
+		queryKey: ["candidates", "voting"],
+		queryFn: () => fetchAllActiveCandidates(data.id),
+	});
 	const { hour: hourEnd, minute: minuteEnd } = convertEpochToLocalGMT(
 		data.epochtimeEnd
 	);
 	const { day, hour, minute, month, year } = convertEpochToLocalGMT(
 		data.epochtimeStart
 	);
-	console.log(data)
+
+	const { mutateAsync: deleteMutateAsync } = useMutation({
+		mutationFn: deleteCandidate,
+		onSuccess: () =>
+			queryClient.invalidateQueries({ queryKey: ["candidates"] }),
+	});
+	const handleDeleteCandidate = async (id: string) => {
+		try {
+			await deleteMutateAsync(id);
+			toast.success("Sukses menghapus data");
+		} catch (err) {
+			console.error(err);
+			toast.error("Gagal menghapus data");
+		}
+	};
 	return (
 		<>
 			<Flex
@@ -96,8 +119,7 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 							textAlign={{ base: "start", lg: "end" }}
 							fontWeight={"normal"}
 						>
-							Kelurahan {data.kelurahan}, Kecamatan{" "}
-							{data.kecamatan}
+							Kelurahan {data.kelurahan}, Kecamatan {data.kecamatan}
 						</Text>
 						<Text
 							textAlign={{ base: "start", lg: "end" }}
@@ -125,14 +147,37 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 					alignItems={"center"}
 					justifyContent={"center"}
 				>
-					<Heading
-						as={"h5"}
-						fontWeight={"semibold"}
-					>
-						Kandidat Masih Kosong
-					</Heading>
-					{/* <CandidateCard />
-					<CandidateCard /> */}
+					{loadingCandidates ? (
+						<Heading>Loading candidates ....</Heading>
+					) : (
+						<>
+							{dataCandidates ? (
+								<>
+									{(dataCandidates as VotingCandidateType[]).map((el) => {
+										return (
+											<CandidateCard
+												handleDeleteCandidate={handleDeleteCandidate}
+												candidateId={el.Candidate.id}
+												misi={el.Candidate.misi}
+												nama={el.Candidate.Warga.nama}
+												nik={el.Candidate.Warga.nik}
+												photoUrl={el.Candidate.photoUrl}
+												visi={el.Candidate.visi}
+												key={el.id}
+											/>
+										);
+									})}
+								</>
+							) : (
+								<Heading
+									as={"h5"}
+									fontWeight={"semibold"}
+								>
+									Kandidat Masih Kosong
+								</Heading>
+							)}
+						</>
+					)}
 				</Stack>
 				<Box margin={"auto"}>
 					<Flex

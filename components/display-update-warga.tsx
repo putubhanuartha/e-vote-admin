@@ -75,6 +75,7 @@ const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 			console.log(res);
 		} catch (err) {
 			console.error(err);
+			toast.error("Data gagal diupdate");
 		}
 	};
 	const handleSubmitSearch = (e: FormEvent<HTMLFormElement>) => {

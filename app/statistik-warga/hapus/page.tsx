@@ -5,7 +5,7 @@ import { Heading } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import deleteWarga from "@/helper/deleteWarga";
 import { toast } from "react-toastify";
-import { DataWargaResponseType } from "../page";
+import { DataWargaResponseType } from "../statistik.type";
 import { useFetchAllWarga } from "@/hooks/useQueryHooks";
 const HapusWarga = () => {
 	const queryClient = useQueryClient();
@@ -27,6 +27,7 @@ const HapusWarga = () => {
 			console.log(res);
 		} catch (error) {
 			console.error(error);
+			toast.error("Data warga gagal terhapus")
 		}
 	};
 	return (

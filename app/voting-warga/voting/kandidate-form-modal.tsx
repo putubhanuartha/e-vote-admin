@@ -1,5 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { app } from "../../../config/firebase.config";
 import {
 	Modal,
 	ModalOverlay,
@@ -19,24 +21,36 @@ import {
 	FormLabel,
 	Stack,
 	Textarea,
+	useQuery,
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-interface IFormKandidat {
-	kandidat: string;
-	visi: string;
-	misi: string;
+import { useFetchAllWarga } from "@/hooks/useQueryHooks";
+import { DataWargaResponseType } from "@/app/statistik-warga/statistik.type";
+import addCandidate, {
+	AxiosPostCandidateType,
+} from "../../../helper/addCandidate";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { VotingType } from "../voting.types";
+import { toast } from "react-toastify";
+
+type IFormKandidat = AxiosPostCandidateType & {
 	file: FileList;
-}
+};
 export type KandidatFormModalType = {
 	isOpen: boolean;
 	onClose: () => void;
 	isEditFormCandidate: boolean;
 	setIsEditFormCandidate: React.Dispatch<React.SetStateAction<boolean>>;
+	dataProps: VotingType;
+	datawarga: any;
 };
 const KandidatFormModal: React.FC<KandidatFormModalType> = ({
 	isOpen,
 	onClose,
+	dataProps,
+	datawarga
 }) => {
+	const queryClient = useQueryClient();
 	const {
 		handleSubmit,
 		register,
@@ -44,9 +58,42 @@ const KandidatFormModal: React.FC<KandidatFormModalType> = ({
 	} = useForm<IFormKandidat>();
 	const initialRef = React.useRef(null);
 	const finalRef = React.useRef(null);
-	const onSubmit: SubmitHandler<IFormKandidat> = (data) => {
-		console.log(data);
+
+	const { mutateAsync: addCandidateAsync } = useMutation({
+		mutationFn: addCandidate,
+		onSuccess: () =>
+			queryClient.invalidateQueries({ queryKey: ["candidates"] }),
+	});
+	const onSubmit: SubmitHandler<IFormKandidat> = (dataForm) => {
+		const storage = getStorage(app);
+		const storageRef = ref(
+			storage,
+			`images/candidates/${new Date().getTime().toString()}_${
+				dataForm.file[0].name
+			}`
+		);
+		uploadBytes(storageRef, dataForm.file[0]).then((snapshot) => {
+			getDownloadURL(storageRef).then(async (downloadUrl) => {
+				try {
+					const response = await addCandidateAsync({
+						misi: dataForm.misi,
+						visi: dataForm.visi,
+						imageUrl: downloadUrl,
+						kandidat: dataForm.kandidat,
+						votingId: dataProps.id,
+					});
+					toast.success("sukses menambahka kandidat");
+					onClose();
+					console.log(response);
+				} catch (err) {
+					console.error(err);
+					toast.error("gagal menambahkan data");
+				}
+			});
+		});
 	};
+
+
 	return (
 		<Modal
 			initialFocusRef={initialRef}
@@ -56,7 +103,7 @@ const KandidatFormModal: React.FC<KandidatFormModalType> = ({
 		>
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Pendaftaran Kandidat Ketua RT</ModalHeader>
+				<ModalHeader>Pendaftaran Kandidat Ketua</ModalHeader>
 				<ModalCloseButton />
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<ModalBody
@@ -73,9 +120,16 @@ const KandidatFormModal: React.FC<KandidatFormModalType> = ({
 								})}
 								placeholder="Pilih calon kandidat"
 							>
-								<option value="option1">Option 1</option>
-								<option value="option2">Option 2</option>
-								<option value="option3">Option 3</option>
+								{(datawarga as DataWargaResponseType[]).map((el) => {
+									return (
+										<option
+											key={el.id}
+											value={el.id}
+										>
+											{el.nama}
+										</option>
+									);
+								})}
 							</Select>
 							<FormErrorMessage>
 								{errors.kandidat && errors.kandidat.message}

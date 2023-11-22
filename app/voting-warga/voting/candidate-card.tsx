@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
 	Button,
 	ButtonGroup,
@@ -13,32 +13,54 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-const CandidateCard = () => {
+export type CandidateCardType = {
+	nama: string;
+	visi: string;
+	misi: string;
+	nik: string;
+	candidateId: string;
+	photoUrl: string;
+	handleDeleteCandidate: (id: string) => Promise<void>;
+};
+const CandidateCard: React.FC<CandidateCardType> = ({
+	candidateId,
+	misi,
+	nama,
+	nik,
+	photoUrl,
+	visi,
+	handleDeleteCandidate,
+}) => {
 	return (
 		<Card maxW="xs">
 			<CardBody>
 				<Image
-					src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-					alt="Green double couch with wooden legs"
+					src={photoUrl}
+					alt={`${nama}-image`}
 					borderRadius="lg"
 				/>
 				<Stack
-					mt="6"
-					spacing="3"
+					mt="3"
+					spacing="1"
 				>
-					<Heading size="md">Living room Sofa</Heading>
-					<Text>
-						This sofa is perfect for modern tropical spaces, baroque inspired
-						spaces, earthy toned spaces and for people who love a chic design
-						with a sprinkle of vintage design.
-					</Text>
+					<Heading size="md">{nama}</Heading>
 					<Text
 						color="blue.600"
-						fontSize="2xl"
+						fontSize="lg"
 					>
-						$450
+						{visi}
 					</Text>
+					<Text>{misi}</Text>
 				</Stack>
+				<Button
+					onClick={() => handleDeleteCandidate(candidateId)}
+					colorScheme="red"
+					mt={"1.5"}
+					ml={"auto"}
+					display={"block"}
+				>
+					Delete
+				</Button>
 			</CardBody>
 			<Divider />
 		</Card>
