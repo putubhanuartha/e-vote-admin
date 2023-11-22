@@ -113,7 +113,6 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 		if (watchJenisPilihan === JenisPilihan.rw) {
 			setValue("rt", undefined);
 		}
-		console.log(watchJenisPilihan);
 	}, [setValue, watchJenisPilihan]);
 	return (
 		<Modal

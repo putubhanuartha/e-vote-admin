@@ -1,18 +1,7 @@
 "use client";
-import {
-	Box,
-	Button,
-	Flex,
-	Heading,
-	Stack,
-	useEditable,
-	useQuery,
-} from "@chakra-ui/react";
-import { AiFillEdit } from "react-icons/ai";
+import { Box, Button, Heading } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { useDisclosure, Text } from "@chakra-ui/react";
-import { BsPlusSquare } from "react-icons/bs";
-import CandidateCard from "./candidate-card";
+import { useDisclosure } from "@chakra-ui/react";
 import VotingReadyPage from "./voting-ready-page";
 import { useRouter } from "next/navigation";
 
@@ -34,42 +23,50 @@ const VotingPage = () => {
 		onOpen: onCandidateFormOpen,
 		onClose: onCandidateFormClose,
 	} = useDisclosure();
-	const { data, isLoading } = useFetchAvailableVoting();
-	const [keyword, setKeyword] = useState<string | undefined>(undefined);
-	const {
-		data: datawarga,
-		isLoading: isLoadingWarga,
-		isFetching: isFetchingWarga,
-		isPending: isPendingWarga,
-	} = useFetchAllWarga(keyword);
 	const {
 		isOpen: isVoteFormOpen,
 		onOpen: onVoteFormOpen,
 		onClose: onVoteFormClose,
 	} = useDisclosure();
 
+	const { data: dataVoting, isLoading: loadingVoting } =
+		useFetchAvailableVoting();
+	const {
+		data: datawarga,
+		isLoading: isLoadingWarga,
+		isFetching: isFetchingWarga,
+		isPending: isPendingWarga,
+	} = useFetchAllWarga(undefined);
+
 	useEffect(() => {
-		if (!isLoadingWarga && !isLoading && !isFetchingWarga && !isPendingWarga) {
+		if (
+			!isLoadingWarga &&
+			!loadingVoting &&
+			!isFetchingWarga &&
+			!isPendingWarga
+		) {
 			if (!datawarga || datawarga.length === 0) {
 				router.replace("/");
-				toast.error("Data warga masih kosong")
+				toast.error("Data warga masih kosong");
 			}
 		}
 	}, [
 		datawarga,
 		isLoadingWarga,
 		router,
-		isLoading,
+		loadingVoting,
 		isFetchingWarga,
 		isPendingWarga,
 	]);
+
 	useEffect(() => {
-		if (!data && !isLoading) {
+		if (!dataVoting && !loadingVoting) {
 			setIsEditFormVote(false);
 		} else {
 			setIsEditFormVote(true);
 		}
-	}, [isEditFormVote, data, isLoading]);
+	}, [isEditFormVote, dataVoting, loadingVoting]);
+
 	useEffect(() => {
 		if (!isEditFormVote) {
 			onVoteFormOpen();
@@ -77,16 +74,16 @@ const VotingPage = () => {
 			onVoteFormClose();
 		}
 	}, [isEditFormVote, onVoteFormClose, onVoteFormOpen]);
+
 	return (
 		<>
-			{(isLoading && !data && !datawarga) ||
-			(datawarga && datawarga.length === 0) ? (
+			{(loadingVoting || isLoadingWarga || !datawarga)  ? (
 				<Heading>Loading ...</Heading>
 			) : (
 				<>
-					{isEditFormVote && data && datawarga && datawarga.length > 0 ? (
+					{isEditFormVote && dataVoting && datawarga && datawarga.length > 0 ? (
 						<VotingReadyPage
-							data={data as VotingType}
+							data={dataVoting as VotingType}
 							isCandidateFormOpen={isCandidateFormOpen}
 							isVoteFormOpen={isVoteFormOpen}
 							onCandidateFormClose={onCandidateFormClose}
@@ -108,10 +105,10 @@ const VotingPage = () => {
 						</Box>
 					)}
 
-					{data && datawarga && datawarga.length > 0 && (
+					{dataVoting && datawarga && (
 						<KandidatFormModal
 							datawarga={datawarga}
-							dataProps={data}
+							dataProps={dataVoting}
 							setIsEditFormCandidate={setIsEditFormCandidate}
 							isEditFormCandidate={isEditFormCandidate}
 							isOpen={isCandidateFormOpen}
@@ -120,7 +117,7 @@ const VotingPage = () => {
 					)}
 
 					<VoteFormModal
-						data={data}
+						data={dataVoting}
 						setIsEditFormVote={setIsEditFormVote}
 						isEditFormVote={isEditFormVote}
 						isOpen={isVoteFormOpen}

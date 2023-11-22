@@ -13,5 +13,6 @@ export const useFetchAvailableVoting = () => {
     return useQuery({
         queryKey: ["voting"],
         queryFn: () => fetchAvailableVoting(),
+        retry: false
     })
 }

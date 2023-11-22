@@ -48,7 +48,7 @@ const KandidatFormModal: React.FC<KandidatFormModalType> = ({
 	isOpen,
 	onClose,
 	dataProps,
-	datawarga
+	datawarga,
 }) => {
 	const queryClient = useQueryClient();
 	const {
@@ -62,7 +62,14 @@ const KandidatFormModal: React.FC<KandidatFormModalType> = ({
 	const { mutateAsync: addCandidateAsync } = useMutation({
 		mutationFn: addCandidate,
 		onSuccess: () =>
-			queryClient.invalidateQueries({ queryKey: ["candidates"] }),
+			Promise.all([
+				queryClient.invalidateQueries({
+					queryKey: ["candidates"],
+				}),
+				queryClient.invalidateQueries({
+					queryKey: ["voting"],
+				}),
+			]),
 	});
 	const onSubmit: SubmitHandler<IFormKandidat> = (dataForm) => {
 		const storage = getStorage(app);
@@ -84,7 +91,6 @@ const KandidatFormModal: React.FC<KandidatFormModalType> = ({
 					});
 					toast.success("sukses menambahka kandidat");
 					onClose();
-					console.log(response);
 				} catch (err) {
 					console.error(err);
 					toast.error("gagal menambahkan data");
@@ -92,7 +98,6 @@ const KandidatFormModal: React.FC<KandidatFormModalType> = ({
 			});
 		});
 	};
-
 
 	return (
 		<Modal

@@ -32,7 +32,7 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 }) => {
 	const queryClient = useQueryClient();
 	const { data: dataCandidates, isLoading: loadingCandidates } = useQuery({
-		queryKey: ["candidates", "voting"],
+		queryKey: ["candidates"],
 		queryFn: () => fetchAllActiveCandidates(data.id),
 	});
 	const { hour: hourEnd, minute: minuteEnd } = convertEpochToLocalGMT(
@@ -45,11 +45,18 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 	const { mutateAsync: deleteMutateAsync } = useMutation({
 		mutationFn: deleteCandidate,
 		onSuccess: () =>
-			queryClient.invalidateQueries({ queryKey: ["candidates"] }),
+			Promise.all([
+				queryClient.invalidateQueries({
+					queryKey: ["candidates"],
+				}),
+				queryClient.invalidateQueries({
+					queryKey: ["voting"],
+				}),
+			]),
 	});
-	const handleDeleteCandidate = async (id: string) => {
+	const handleDeleteCandidate = async (id: string, votingId: string) => {
 		try {
-			await deleteMutateAsync(id);
+			await deleteMutateAsync({ id, votingId });
 			toast.success("Sukses menghapus data");
 		} catch (err) {
 			console.error(err);
@@ -94,7 +101,7 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 							color={"tomato"}
 							textAlign={"center"}
 						>
-							belum mulai
+							siap dimulai
 						</Text>
 					)}
 					{data.status === "not_ready" && (
@@ -156,6 +163,7 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 									{(dataCandidates as VotingCandidateType[]).map((el) => {
 										return (
 											<CandidateCard
+												votingId={el.fk_votingId}
 												handleDeleteCandidate={handleDeleteCandidate}
 												candidateId={el.Candidate.id}
 												misi={el.Candidate.misi}

@@ -20,7 +20,8 @@ export type CandidateCardType = {
 	nik: string;
 	candidateId: string;
 	photoUrl: string;
-	handleDeleteCandidate: (id: string) => Promise<void>;
+	votingId: string;
+	handleDeleteCandidate: (id: string, votingId: string) => Promise<void>;
 };
 const CandidateCard: React.FC<CandidateCardType> = ({
 	candidateId,
@@ -30,6 +31,7 @@ const CandidateCard: React.FC<CandidateCardType> = ({
 	photoUrl,
 	visi,
 	handleDeleteCandidate,
+	votingId,
 }) => {
 	return (
 		<Card maxW="xs">
@@ -38,6 +40,9 @@ const CandidateCard: React.FC<CandidateCardType> = ({
 					src={photoUrl}
 					alt={`${nama}-image`}
 					borderRadius="lg"
+					maxH={"20rem"}
+					w={"17rem"}
+					objectFit={"cover"}
 				/>
 				<Stack
 					mt="3"
@@ -53,7 +58,7 @@ const CandidateCard: React.FC<CandidateCardType> = ({
 					<Text>{misi}</Text>
 				</Stack>
 				<Button
-					onClick={() => handleDeleteCandidate(candidateId)}
+					onClick={() => handleDeleteCandidate(candidateId, votingId)}
 					colorScheme="red"
 					mt={"1.5"}
 					ml={"auto"}
