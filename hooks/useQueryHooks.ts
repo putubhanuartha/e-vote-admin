@@ -1,4 +1,7 @@
+import fetchAllForms from "@/helper/fetchAllForms"
 import fetchAvailableVoting from "@/helper/fetchAvailableVoting"
+import fetchForm from "@/helper/fetchForm"
+import fetchOneAdministrative from "@/helper/fetchOneAdministrative"
 import fetchStatsWarga from "@/helper/fetchStatsWarga"
 import { useQuery } from "@tanstack/react-query"
 
@@ -12,7 +15,27 @@ export const useFetchAllWarga = (keyword: string | undefined | null) => {
 export const useFetchAvailableVoting = () => {
     return useQuery({
         queryKey: ["voting"],
-        queryFn: () => fetchAvailableVoting(),
+        queryFn: fetchAvailableVoting,
         retry: false
     })
+}
+
+export const useFetchOneAdministrative = () => {
+    return useQuery({
+        queryKey: ["administrative"],
+        queryFn: fetchOneAdministrative,
+        retry: false,
+        throwOnError: (err) => {
+            window.location.href = 'https://google.com'
+            return false
+        }
+    })
+}
+
+export const useFetchAllForms = () => {
+    return useQuery({ queryKey: ["form"], queryFn: fetchAllForms, retry: false })
+}
+
+export const useFetchOneForm = (id: string) => {
+    return useQuery({ queryKey: ["form", id], queryFn: () => fetchForm(id) })
 }

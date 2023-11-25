@@ -2,11 +2,11 @@
 import { Box, Button, Heading } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDisclosure } from "@chakra-ui/react";
-import VotingReadyPage from "./voting-ready-page";
+import VotingReadyPage from "./(components)/voting-ready-page";
 import { useRouter } from "next/navigation";
 
-import VoteFormModal from "./vote-form-modal";
-import KandidatFormModal from "./kandidate-form-modal";
+import VoteFormModal from "./(components)/vote-form-modal";
+import KandidatFormModal from "./(components)/kandidate-form-modal";
 import {
 	useFetchAllWarga,
 	useFetchAvailableVoting,

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SingleDatepicker } from "chakra-dayzed-datepicker";
 import {
@@ -10,11 +10,8 @@ import {
 	ModalFooter,
 	ModalBody,
 	ModalCloseButton,
-	Input,
-	Select,
 	Button,
 	FormControl,
-	FormErrorMessage,
 	FormLabel,
 } from "@chakra-ui/react";
 import DateInput from "@/components/date-input/date-input";
@@ -27,8 +24,8 @@ import {
 } from "@/helper/timeConverters";
 import editVoting from "@/helper/editVoting";
 import { toast } from "react-toastify";
-import { VotingType } from "../voting.types";
-import { JenisPilihan } from "@/enums";
+import { VotingType } from "../../voting.types";
+import { useFetchOneAdministrative } from "@/hooks/useQueryHooks";
 export type VoteFormModalType = {
 	isOpen: boolean;
 	onClose: () => void;
@@ -42,11 +39,7 @@ export type IFormVote = {
 	date: Date;
 	timeStart: string;
 	timeEnd: string;
-	jenisPilihan: "rt" | "rw";
-	kelurahan: string;
-	kecamatan: string;
-	rt?: number;
-	rw: number;
+	administrativeId: string;
 };
 const VoteFormModal: React.FC<VoteFormModalType> = ({
 	isOpen,
@@ -62,19 +55,11 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 	);
 	const [timeStart, setTimeStart] = useState("");
 	const [timeEnd, setTimeEnd] = useState("");
-	const {
-		handleSubmit,
-		register,
-		watch,
-		formState: { errors },
-		setValue,
-	} = useForm<IFormVote>({
-		defaultValues: {
-			jenisPilihan: data ? data.jenisPilihan : "rt",
-		},
-	});
+	const { handleSubmit } = useForm<IFormVote>();
 	const initialRef = React.useRef(null);
 	const finalRef = React.useRef(null);
+	const { data: dataAdministrative, isLoading: loadingAdministrative } =
+		useFetchOneAdministrative();
 	const { mutateAsync: addVotingAsync, isPending: isPendingAddVoting } =
 		useMutation({
 			mutationFn: addVoting,
@@ -92,6 +77,7 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 		dataForm.date = date;
 		dataForm.timeStart = timeStart + ":00";
 		dataForm.timeEnd = timeEnd + ":00";
+		dataForm.administrativeId = dataAdministrative.id;
 		try {
 			if (isEditFormVote && data) {
 				dataForm.id = data.id;
@@ -107,13 +93,7 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 			toast.error("gagal mengupdate data atau menambahkan data");
 		}
 	};
-	const watchJenisPilihan = watch("jenisPilihan");
 
-	useEffect(() => {
-		if (watchJenisPilihan === JenisPilihan.rw) {
-			setValue("rt", undefined);
-		}
-	}, [setValue, watchJenisPilihan]);
 	return (
 		<Modal
 			initialFocusRef={initialRef}
@@ -136,69 +116,6 @@ const VoteFormModal: React.FC<VoteFormModalType> = ({
 						flexDirection={"column"}
 						rowGap={"0.5rem"}
 					>
-						<FormControl isInvalid={Boolean(errors.jenisPilihan)}>
-							<FormLabel htmlFor="jenisPilihan">
-								Pilih Jenis Pemilihan
-							</FormLabel>
-							<Select
-								{...register("jenisPilihan", {
-									required: "Pilih kandidat jenis pemilihan",
-								})}
-							>
-								<option value="rt">RT</option>
-								<option value="rw">RW</option>
-							</Select>
-							<FormErrorMessage>
-								{errors.jenisPilihan?.message}
-							</FormErrorMessage>
-						</FormControl>
-						<FormControl isInvalid={Boolean(errors.kecamatan)}>
-							<FormLabel htmlFor="kecamatan">Kecamatan</FormLabel>
-							<Input
-								{...register("kecamatan", {
-									required: "Masukkan lokasi kecamatan pemilihan",
-								})}
-								defaultValue={data ? data.kecamatan : undefined}
-								type="text"
-								placeholder="Masukkan lokasi kecamatan"
-							/>
-							<FormErrorMessage>{errors.kecamatan?.message}</FormErrorMessage>
-						</FormControl>
-						<FormControl isInvalid={Boolean(errors.kelurahan)}>
-							<FormLabel htmlFor="kelurahan">Kelurahan</FormLabel>
-							<Input
-								defaultValue={data ? data.kelurahan : undefined}
-								{...register("kelurahan", {
-									required: "Masukkan lokasi kandidat",
-								})}
-								placeholder="Masukkan lokasi kelurahan"
-							/>
-							<FormErrorMessage>{errors.kelurahan?.message}</FormErrorMessage>
-						</FormControl>
-						<FormControl isInvalid={Boolean(errors.rw)}>
-							<FormLabel htmlFor="rw">Masukkan nomor rw</FormLabel>
-							<Input
-								defaultValue={data ? data.rw : undefined}
-								{...register("rw", { required: "Masukkan rw" })}
-								type="number"
-								placeholder="Masukkan nomor rw"
-							/>
-							<FormErrorMessage>{errors.rw?.message}</FormErrorMessage>
-						</FormControl>
-						{watchJenisPilihan === "rt" && (
-							<FormControl isInvalid={Boolean(errors.rt)}>
-								<FormLabel htmlFor="rt">Masukkan nomor rw</FormLabel>
-								<Input
-									defaultValue={
-										watchJenisPilihan === "rt" ? data?.rt : undefined
-									}
-									{...register("rt", { required: "Masukkan nomor rt" })}
-									type="number"
-									placeholder="Masukkan nomor rt"
-								/>
-								<FormErrorMessage>{errors.rt?.message}</FormErrorMessage>
-							</FormControl>
-						)}
 						<FormControl>
 							<FormLabel>Atur Tanggal</FormLabel>
 							<SingleDatepicker

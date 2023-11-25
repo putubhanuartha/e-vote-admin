@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import { app } from "../../../config/firebase.config";
+import { app } from "../../../../config/firebase.config";
 import {
 	Modal,
 	ModalOverlay,
@@ -28,9 +28,9 @@ import { useFetchAllWarga } from "@/hooks/useQueryHooks";
 import { DataWargaResponseType } from "@/app/statistik-warga/statistik.type";
 import addCandidate, {
 	AxiosPostCandidateType,
-} from "../../../helper/addCandidate";
+} from "../../../../helper/addCandidate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { VotingType } from "../voting.types";
+import { VotingType } from "../../voting.types";
 import { toast } from "react-toastify";
 
 type IFormKandidat = AxiosPostCandidateType & {
@@ -55,6 +55,7 @@ const KandidatFormModal: React.FC<KandidatFormModalType> = ({
 		handleSubmit,
 		register,
 		formState: { errors },
+		reset,
 	} = useForm<IFormKandidat>();
 	const initialRef = React.useRef(null);
 	const finalRef = React.useRef(null);
@@ -82,14 +83,15 @@ const KandidatFormModal: React.FC<KandidatFormModalType> = ({
 		uploadBytes(storageRef, dataForm.file[0]).then((snapshot) => {
 			getDownloadURL(storageRef).then(async (downloadUrl) => {
 				try {
-					const response = await addCandidateAsync({
+					await addCandidateAsync({
 						misi: dataForm.misi,
 						visi: dataForm.visi,
 						imageUrl: downloadUrl,
 						kandidat: dataForm.kandidat,
 						votingId: dataProps.id,
 					});
-					toast.success("sukses menambahka kandidat");
+					toast.success("sukses menambahkan kandidat");
+					reset();
 					onClose();
 				} catch (err) {
 					console.error(err);

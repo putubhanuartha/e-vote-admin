@@ -1,18 +1,17 @@
-import { JenisPilihan, StatusVoting } from "@/enums"
-
+import { StatusVoting } from "@/enums"
+import { AdministrativeType } from "@/types"
 export type VotingType = {
     id: string
     epochtimeStart: number
     epochtimeEnd: number
     createdAt: Date
     updatedAt: Date
-    jenisPilihan: JenisPilihan
-    kecamatan: string
-    kelurahan: string
-    rw: number
-    rt?: number | undefined
-    status: StatusVoting
+    status: StatusVoting,
+    AdministrativeId: string,
+    Administrative: AdministrativeType
 }
+
+
 
 export type WargaType = {
     nama: string,

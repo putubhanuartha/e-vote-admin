@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BsPlusSquare } from "react-icons/bs";
@@ -7,11 +7,13 @@ import {
 	convertEpochToLocalGMT,
 	timeDigitConverter,
 } from "@/helper/timeConverters";
-import { VotingCandidateType, VotingType } from "../voting.types";
+import { VotingCandidateType, VotingType } from "../../voting.types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import fetchAllActiveCandidates from "@/helper/fetchAllActiveCandidates";
 import deleteCandidate from "@/helper/deleteCandidate";
 import { toast } from "react-toastify";
+import StatsPemilihan from "@/components/stats-pemilihan";
+import { pemilihan } from "@/data/data";
 export type VotingReadyPageProps = {
 	isCandidateFormOpen: boolean;
 	isVoteFormOpen: boolean;
@@ -119,22 +121,25 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 						fontWeight={"medium"}
 					>
 						Pemilihan Ketua{" "}
-						<span className="uppercase">{data.jenisPilihan}</span>
+						<span className="uppercase">
+							{data.Administrative.jenisPilihan}
+						</span>
 					</Text>
 					<Box>
 						<Text
 							textAlign={{ base: "start", lg: "end" }}
 							fontWeight={"normal"}
 						>
-							Kelurahan {data.kelurahan}, Kecamatan {data.kecamatan}
+							Kelurahan {data.Administrative.kelurahan}, Kecamatan{" "}
+							{data.Administrative.kecamatan}
 						</Text>
 						<Text
 							textAlign={{ base: "start", lg: "end" }}
 							fontWeight={"normal"}
 						>
-							{data.jenisPilihan === "rw"
-								? `RW ${data.rw}`
-								: `RW ${data.rw}, RT ${data.rt}`}
+							{data.Administrative.jenisPilihan === "rw"
+								? `RW ${data.Administrative.rw}`
+								: `RW ${data.Administrative.rw}, RT ${data.Administrative.rt}`}
 						</Text>
 					</Box>
 				</Box>
@@ -187,7 +192,7 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 						</>
 					)}
 				</Stack>
-				<Box margin={"auto"}>
+				{/* <Box margin={"auto"}>
 					<Flex
 						flexDirection={{ base: "column", lg: "row" }}
 						gap={5}
@@ -207,7 +212,10 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 							Edit Pelaksanaan Pemilihan
 						</Button>
 					</Flex>
-				</Box>
+				</Box> */}
+				<Spacer mt={'2rem'}/>
+				<Heading>Statistik Pemilihan Sementara</Heading>
+				<StatsPemilihan {...pemilihan} />
 			</Box>
 		</>
 	);

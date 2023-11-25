@@ -1,10 +1,8 @@
 "use client";
 import {
 	Button,
-	ButtonGroup,
 	Card,
 	CardBody,
-	CardFooter,
 	Divider,
 	Heading,
 	Image,
@@ -40,7 +38,7 @@ const CandidateCard: React.FC<CandidateCardType> = ({
 					src={photoUrl}
 					alt={`${nama}-image`}
 					borderRadius="lg"
-					maxH={"20rem"}
+					h={"20rem"}
 					w={"17rem"}
 					objectFit={"cover"}
 				/>

@@ -1,9 +1,7 @@
 "use client";
 import MenuBar from "@/components/menu-bar";
 import { Box } from "@chakra-ui/react";
-import { Link, Text } from "@chakra-ui/react";
 import React from "react";
-import { dataAdmin } from "@/data/data";
 import TopBar from "@/components/top-bar";
 const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
