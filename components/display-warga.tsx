@@ -1,4 +1,4 @@
-import { DataWargaResponseType } from "@/app/statistik-warga/page";
+import { DataWargaResponseType } from "@/app/statistik-warga/statistik.type";
 import { DataWargaType } from "@/data/data";
 import { StatusAkunWarga } from "@/data/data";
 import {

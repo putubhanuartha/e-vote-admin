@@ -16,7 +16,8 @@ export default function Home() {
 			{data && (
 				<>
 					<Heading>
-						Selamat Datang Admin <span className="uppercase">{data.jenisPilihan}</span>
+						Selamat Datang Admin{" "}
+						<span className="uppercase">{data.jenisPilihan}</span>
 					</Heading>
 					<Stack
 						direction={"row"}

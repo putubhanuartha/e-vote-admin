@@ -6,7 +6,7 @@ import React, {
 	FormEventHandler,
 	useRef,
 } from "react";
-import { DataWargaType } from "@/data/data";
+import { DataWargaType, StatusAkunWarga } from "@/data/data";
 import { BsTrashFill } from "react-icons/bs";
 import { IconButton } from "@chakra-ui/react";
 import {
@@ -31,9 +31,10 @@ import {
 	TableContainer,
 	Button,
 } from "@chakra-ui/react";
+import { DataWargaResponseType } from "@/app/statistik-warga/statistik.type";
 
 export type DisplayDeleteWarga = {
-	dataWarga: DataWargaType[];
+	dataWarga: DataWargaResponseType[];
 	id: string | null;
 	setId: React.Dispatch<React.SetStateAction<string | null>>;
 	handleDelete: () => void;
@@ -92,7 +93,11 @@ const DisplayDeleteWarga: React.FC<DisplayDeleteWarga> = ({
 									<Td>{el.nama}</Td>
 									<Td>{el.nik}</Td>
 									<Td>{el.email}</Td>
-									<Td>{el.status}</Td>
+									<Td>
+										{el.registered
+											? StatusAkunWarga.terdaftar
+											: StatusAkunWarga.belum_terdaftar}
+									</Td>
 									<Td>
 										<IconButton
 											onClick={() => {

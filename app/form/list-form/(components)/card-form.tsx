@@ -1,3 +1,4 @@
+import { axiosMainServerCredentials } from "@/config/axios.config";
 import { StatusFormFilling } from "@/enums";
 import deleteForm from "@/helper/deleteForm";
 import editStatusForm from "@/helper/editStatusForm";
@@ -11,6 +12,7 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";
@@ -40,6 +42,38 @@ const CardForm: React.FC<CardFormProps> = ({
 		mutationFn: deleteForm,
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["form"] }),
 	});
+	const downloadFile = async (id : string) => {
+		try {
+			const response = await axios({
+				method: "GET",
+				url: `${process.env.NEXT_PUBLIC_MAIN_SERVER_URL}/admin/download-form?id=${id}`,
+				responseType: "blob", // This is important for downloading binary files
+				withCredentials: true, // Set this if you are sending credentials
+			});
+
+			// Create a link element and trigger a click to download the file
+
+			const contentDisposition = response.headers['content-disposition'];
+			const filenameMatch = contentDisposition && contentDisposition.match(/filename="(.+)"$/);
+		
+			console.log(contentDisposition)
+			// Use the extracted filename or a default if not found
+			const filename = filenameMatch ? filenameMatch[1] : 'output.xlsx';
+
+			console.log(filenameMatch)
+
+			const url = window.URL.createObjectURL(new Blob([response.data]));
+			const link = document.createElement("a");
+			link.href = url;
+			link.setAttribute("download", filename);
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		} catch (error) {
+			console.error("Error downloading file:", error);
+			// Handle error, show a message, etc.
+		}
+	};
 	return (
 		<Stack
 			p={"0.5rem"}
@@ -126,6 +160,9 @@ const CardForm: React.FC<CardFormProps> = ({
 				)}
 				{status === StatusFormFilling.done && (
 					<IconButton
+						onClick={() => {
+							downloadFile(id);
+						}}
 						size={"xs"}
 						aria-label="download"
 						icon={<DownloadIcon />}

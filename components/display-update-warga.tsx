@@ -28,13 +28,14 @@ import {
 	Input,
 	IconButton,
 } from "@chakra-ui/react";
-import { DataWargaType } from "@/data/data";
+import { DataWargaType, StatusAkunWarga } from "@/data/data";
 import { SubmitHandler, useForm } from "react-hook-form";
 import updateWarga from "@/helper/updateWarga";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { DataWargaResponseType } from "@/app/statistik-warga/statistik.type";
 export type DisplayUpdateWargaProps = {
-	dataWarga: DataWargaType[];
+	dataWarga: DataWargaResponseType[];
 	id: string | null;
 	setId: React.Dispatch<React.SetStateAction<string | null>>;
 	keyword: string | undefined | null;
@@ -123,7 +124,11 @@ const DisplayUpdateWarga: React.FC<DisplayUpdateWargaProps> = ({
 									<Td>{el.nama}</Td>
 									<Td>{el.nik}</Td>
 									<Td>{el.email}</Td>
-									<Td>{el.status}</Td>
+									<Td>
+										{el.registered
+											? StatusAkunWarga.terdaftar
+											: StatusAkunWarga.belum_terdaftar}
+									</Td>
 									<Td>
 										<IconButton
 											onClick={() => {
