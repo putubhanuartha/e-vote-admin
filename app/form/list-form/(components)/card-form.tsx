@@ -53,14 +53,10 @@ const CardForm: React.FC<CardFormProps> = ({
 
 			// Create a link element and trigger a click to download the file
 
-			const contentDisposition = response.headers['content-disposition'];
-			const filenameMatch = contentDisposition && contentDisposition.match(/filename="(.+)"$/);
-		
-			console.log(contentDisposition)
-			// Use the extracted filename or a default if not found
+			const contentDisposition = response.headers['content-disposition'] as string;
+			const filenameMatch = contentDisposition.match(/filename=(.*?xlsx)/);
 			const filename = filenameMatch ? filenameMatch[1] : 'output.xlsx';
 
-			console.log(filenameMatch)
 
 			const url = window.URL.createObjectURL(new Blob([response.data]));
 			const link = document.createElement("a");
