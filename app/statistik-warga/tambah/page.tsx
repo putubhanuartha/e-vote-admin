@@ -22,11 +22,15 @@ const TambahWarga = () => {
 	} = useForm<DataWargaType>();
 	const onSubmit: SubmitHandler<DataWargaType> = (data) => {
 		axiosMainServer
-			.post("/admin/add-warga", {
-				nama: data.nama,
-				nik: data.nik,
-				email: data.email,
-			})
+			.post(
+				"/admin/add-warga",
+				{
+					nama: data.nama,
+					nik: data.nik,
+					email: data.email,
+				},
+				{ withCredentials: true }
+			)
 			.then((res) => {
 				toast.success("Sukses menambahkan warga");
 				reset();

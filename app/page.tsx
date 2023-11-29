@@ -2,6 +2,7 @@
 
 import { JenisPilihan } from "@/enums";
 import { useFetchOneAdministrative } from "@/hooks/useQueryHooks";
+import LayoutProvider from "@/provider/layout-provider";
 import { AdministrativeType } from "@/types";
 import { Card, CardBody, Heading, Stack, Text } from "@chakra-ui/react";
 export default function Home() {
@@ -11,7 +12,7 @@ export default function Home() {
 	};
 
 	return (
-		<>
+		<LayoutProvider>
 			{isLoading && <Heading>Loading ...</Heading>}
 			{data && (
 				<>
@@ -77,6 +78,6 @@ export default function Home() {
 					</Stack>
 				</>
 			)}
-		</>
+		</LayoutProvider>
 	);
 }

@@ -1,3 +1,4 @@
+import { axiosMainServerCredentials } from "@/config/axios.config"
 import fetchAllForms from "@/helper/fetchAllForms"
 import fetchAvailableVoting from "@/helper/fetchAvailableVoting"
 import fetchForm from "@/helper/fetchForm"
@@ -26,7 +27,7 @@ export const useFetchOneAdministrative = () => {
         queryFn: fetchOneAdministrative,
         retry: false,
         throwOnError: (err) => {
-            window.location.href = 'https://google.com'
+            window.location.href = '/create-administrative'
             return false
         }
     })
@@ -38,4 +39,8 @@ export const useFetchAllForms = () => {
 
 export const useFetchOneForm = (id: string) => {
     return useQuery({ queryKey: ["form", id], queryFn: () => fetchForm(id) })
+}
+
+export const useCheckAuth = () => {
+    return useQuery({ queryKey: ["auth"], queryFn: async () => await axiosMainServerCredentials.get('/admin/check-auth'), retry: false })
 }

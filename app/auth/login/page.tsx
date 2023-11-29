@@ -1,28 +1,40 @@
 "use client";
-import {
-	FormControl,
-	FormLabel,
-} from "@chakra-ui/form-control";
-import {
-	Button,
-	FormErrorMessage,
-	Heading,
-} from "@chakra-ui/react";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import { Button, FormErrorMessage, Heading } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import loginAdmin from "@/helper/loginAdmin";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 interface IFormInput {
 	username: string;
 	password: string;
 }
 const LoginPage = () => {
+	const router = useRouter();
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm<IFormInput>();
-	const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+	const { mutateAsync: loginAsync } = useMutation({ mutationFn: loginAdmin });
+	const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+		try {
+			const response = await loginAsync({
+				password: data.password,
+				username: data.username,
+			});
+			console.log(response);
+			toast.success("Anda berhasil login");
+			router.push("/");
+		} catch (err) {
+			console.error(err);
+			toast.error("Error login");
+		}
+	};
 	return (
 		<Box
 			width={"100%"}
@@ -35,8 +47,8 @@ const LoginPage = () => {
 			<Heading
 				as={"h4"}
 				size={["lg", "xl"]}
-				textAlign={'center'}
-				marginBottom={'1.5rem'}
+				textAlign={"center"}
+				marginBottom={"1.5rem"}
 			>
 				Login Admin
 			</Heading>

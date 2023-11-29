@@ -3,27 +3,30 @@ import MenuBar from "@/components/menu-bar";
 import { Box } from "@chakra-ui/react";
 import React from "react";
 import TopBar from "@/components/top-bar";
+import SecurityProvider from "./security-provider";
 const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<Box>
-			<MenuBar />
-			<TopBar />
-			<Box
-				paddingStart={{ base: "1rem", lg: "17rem", xl: "19rem" }}
-				pt={"5.5rem"}
-				display={"flex"}
-				flexDirection={"column"}
-				h={"100%"}
-			>
+		<SecurityProvider>
+			<Box>
+				<MenuBar />
+				<TopBar />
 				<Box
-					flex={"1"}
-					pb={"1rem"}
-					px={"1.5rem"}
+					paddingStart={{ base: "1rem", lg: "17rem", xl: "19rem" }}
+					pt={"5.5rem"}
+					display={"flex"}
+					flexDirection={"column"}
+					h={"100%"}
 				>
-					{children}
+					<Box
+						flex={"1"}
+						pb={"1rem"}
+						px={"1.5rem"}
+					>
+						{children}
+					</Box>
 				</Box>
 			</Box>
-		</Box>
+		</SecurityProvider>
 	);
 };
 

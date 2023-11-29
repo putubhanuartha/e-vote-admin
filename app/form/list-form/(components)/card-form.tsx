@@ -42,21 +42,20 @@ const CardForm: React.FC<CardFormProps> = ({
 		mutationFn: deleteForm,
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["form"] }),
 	});
-	const downloadFile = async (id : string) => {
+	const downloadFile = async (id: string) => {
 		try {
 			const response = await axios({
 				method: "GET",
 				url: `${process.env.NEXT_PUBLIC_MAIN_SERVER_URL}/admin/download-form?id=${id}`,
-				responseType: "blob", // This is important for downloading binary files
-				withCredentials: true, // Set this if you are sending credentials
+				responseType: "blob",
+				withCredentials: true,
 			});
 
-			// Create a link element and trigger a click to download the file
-
-			const contentDisposition = response.headers['content-disposition'] as string;
+			const contentDisposition = response.headers[
+				"content-disposition"
+			] as string;
 			const filenameMatch = contentDisposition.match(/filename=(.*?xlsx)/);
-			const filename = filenameMatch ? filenameMatch[1] : 'output.xlsx';
-
+			const filename = filenameMatch ? filenameMatch[1] : "output.xlsx";
 
 			const url = window.URL.createObjectURL(new Blob([response.data]));
 			const link = document.createElement("a");
