@@ -32,7 +32,7 @@ export default function Home() {
 									flexDirection={"column"}
 									alignItems={"center"}
 								>
-									<Heading size={"md"}>RT</Heading>
+									<Heading size={"lg"}>RT</Heading>
 									<Text
 										fontWeight={"semibold"}
 										size={"2xl"}

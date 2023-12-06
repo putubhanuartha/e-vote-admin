@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import { app } from "../../../../config/firebase.config";
+import { app } from "@/config/firebase.config";
 import {
 	Modal,
 	ModalOverlay,
@@ -25,10 +25,8 @@ import {
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useFetchAllWarga } from "@/hooks/useQueryHooks";
-import { DataWargaResponseType } from "@/app/statistik-warga/statistik.type";
-import addCandidate, {
-	AxiosPostCandidateType,
-} from "../../../../helper/addCandidate";
+import { DataWargaResponseType } from "@/app/(main-ui)/statistik-warga/statistik.type";
+import addCandidate, { AxiosPostCandidateType } from "@/helper/addCandidate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { VotingType } from "../../voting.types";
 import { toast } from "react-toastify";

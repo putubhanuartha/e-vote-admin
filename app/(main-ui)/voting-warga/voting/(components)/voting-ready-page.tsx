@@ -1,4 +1,12 @@
-import { Box, Button, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	Flex,
+	Heading,
+	Spacer,
+	Stack,
+	Text,
+} from "@chakra-ui/react";
 import React from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BsPlusSquare } from "react-icons/bs";
@@ -13,7 +21,8 @@ import fetchAllActiveCandidates from "@/helper/fetchAllActiveCandidates";
 import deleteCandidate from "@/helper/deleteCandidate";
 import { toast } from "react-toastify";
 import StatsPemilihan from "@/components/stats-pemilihan";
-import { pemilihan } from "@/data/data";
+import { StatusVoting } from "@/enums";
+
 export type VotingReadyPageProps = {
 	isCandidateFormOpen: boolean;
 	isVoteFormOpen: boolean;
@@ -65,6 +74,7 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 			toast.error("Gagal menghapus data");
 		}
 	};
+	// console.log(data)
 	return (
 		<>
 			<Flex
@@ -192,30 +202,38 @@ const VotingReadyPage: React.FC<VotingReadyPageProps> = ({
 						</>
 					)}
 				</Stack>
-				{/* <Box margin={"auto"}>
-					<Flex
-						flexDirection={{ base: "column", lg: "row" }}
-						gap={5}
-					>
-						<Button
-							onClick={onCandidateFormOpen}
-							leftIcon={<BsPlusSquare size={23} />}
-							paddingY={"2rem"}
+				{data.status === StatusVoting.active ? (
+					<>
+						<Spacer mt={"2rem"} />
+						<Heading>Statistik Pemilihan Sementara</Heading>
+						<StatsPemilihan
+							votingId={data.id}
+							titleLabel={`Pemilihan ${data.Administrative.jenisPilihan.toUpperCase()}`}
+						/>
+					</>
+				) : (
+					<Box margin={"auto"}>
+						<Flex
+							flexDirection={{ base: "column", lg: "row" }}
+							gap={5}
 						>
-							Tambah Kandidat Ketua
-						</Button>
-						<Button
-							onClick={onVoteFormOpen}
-							leftIcon={<AiFillEdit size={23} />}
-							paddingY={"2rem"}
-						>
-							Edit Pelaksanaan Pemilihan
-						</Button>
-					</Flex>
-				</Box> */}
-				<Spacer mt={'2rem'}/>
-				<Heading>Statistik Pemilihan Sementara</Heading>
-				<StatsPemilihan {...pemilihan} />
+							<Button
+								onClick={onCandidateFormOpen}
+								leftIcon={<BsPlusSquare size={23} />}
+								paddingY={"2rem"}
+							>
+								Tambah Kandidat Ketua
+							</Button>
+							<Button
+								onClick={onVoteFormOpen}
+								leftIcon={<AiFillEdit size={23} />}
+								paddingY={"2rem"}
+							>
+								Edit Pelaksanaan Pemilihan
+							</Button>
+						</Flex>
+					</Box>
+				)}
 			</Box>
 		</>
 	);

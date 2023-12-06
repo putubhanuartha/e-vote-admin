@@ -1,8 +1,8 @@
-import { Box, IconButton, Stack, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, IconButton, Text, useDisclosure } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
 import React from "react";
 import { dataAdmin } from "@/data/data";
-import { Spin as Hamburger } from "hamburger-react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import DrawerMenu from "./drawer-menu";
 
 const TopBar = () => {
@@ -38,9 +38,10 @@ const TopBar = () => {
 				</Link>
 				<IconButton
 					onClick={onOpen}
+					size={"sm"}
 					display={{ base: "block", lg: "none" }}
 					aria-label="button hamburger"
-					icon={<Hamburger toggled={isOpen} />}
+					icon={<HamburgerIcon />}
 				/>
 			</Box>
 			<DrawerMenu
