@@ -1,6 +1,11 @@
 "use client";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { Button, FormErrorMessage, Heading } from "@chakra-ui/react";
+import {
+	Button,
+	ButtonGroup,
+	FormErrorMessage,
+	Heading,
+} from "@chakra-ui/react";
 import { Input } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
 import React from "react";
@@ -9,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import addAdmin from "@/helper/addAdmin";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 interface IFormInput {
 	username: string;
 	password: string;
@@ -23,7 +29,8 @@ const SignupPage = () => {
 		watch,
 	} = useForm<IFormInput>();
 	const { mutateAsync: signUpAsync } = useMutation({ mutationFn: addAdmin });
-	const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+	const onSubmit: SubmitHandler<IFormInput> = async (data, event) => {
+		event?.preventDefault();
 		try {
 			const response = await signUpAsync({
 				password: data.password,
@@ -101,15 +108,25 @@ const SignupPage = () => {
 						</FormErrorMessage>
 					)}
 				</FormControl>
-				<Button
-					mt={4}
-					colorScheme="teal"
-					isLoading={isSubmitting}
-					type="submit"
-					variant={"solid"}
-				>
-					Signup
-				</Button>
+				<ButtonGroup spacing={5}>
+					<Button
+						mt={4}
+						colorScheme="teal"
+						isLoading={isSubmitting}
+						type="submit"
+						variant={"solid"}
+					>
+						Signup
+					</Button>
+					<Button
+						mt={4}
+						colorScheme="teal"
+						isLoading={isSubmitting}
+						variant={"solid"}
+					>
+						<Link href={"/auth/login"}>Login</Link>
+					</Button>
+				</ButtonGroup>
 			</form>
 		</Box>
 	);
