@@ -9,7 +9,7 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { convertToDateObject } from "@/helper/timeConverters";
+
 export type CardVotingResultProps = {
 	id: string;
 	epochtimeStart: number;

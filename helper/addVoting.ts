@@ -1,4 +1,4 @@
-import { IFormVote } from "@/app/voting-warga/voting/vote-form-modal"
+import { IFormVote } from "@/app/(main-ui)/voting-warga/voting/(components)/vote-form-modal"
 import { axiosMainServerCredentials } from "@/config/axios.config"
 
 
