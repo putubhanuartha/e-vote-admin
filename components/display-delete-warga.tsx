@@ -31,7 +31,7 @@ import {
 	TableContainer,
 	Button,
 } from "@chakra-ui/react";
-import { DataWargaResponseType } from "@/app/statistik-warga/statistik.type";
+import { DataWargaResponseType } from "@/app/(main-ui)/statistik-warga/statistik.type";
 
 export type DisplayDeleteWarga = {
 	dataWarga: DataWargaResponseType[];
