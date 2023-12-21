@@ -11,10 +11,6 @@ export type DataWargaType = {
     status: StatusAkunWarga
 }
 
-export const pemilihan: StatsPemilihan = {
-    titleLabel: "Pemilihan 1",
-    datas: [{ label: "Ketua 1", value: 13 }, { label: "Ketua 2", value: 20 }]
-}
 
 export const dataAdmin = {
     username: "admin",
