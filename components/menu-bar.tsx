@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Heading, Box } from "@chakra-ui/react";
 import React from "react";
 import AccordionMenu from "./accordion-menu";

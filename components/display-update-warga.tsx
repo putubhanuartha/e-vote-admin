@@ -33,7 +33,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import updateWarga from "@/helper/updateWarga";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { DataWargaResponseType } from "@/app/statistik-warga/statistik.type";
+import { DataWargaResponseType } from "@/app/(main-ui)/statistik-warga/statistik.type";
 export type DisplayUpdateWargaProps = {
 	dataWarga: DataWargaResponseType[];
 	id: string | null;
